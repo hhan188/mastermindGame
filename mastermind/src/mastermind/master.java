@@ -20,38 +20,50 @@ public class master {
 
 	public static void main(String[] args) {
 		master m = new master();
-		int answer[] = m.random();
+		// int answer[] = m.random();
+		int answer[] = { 7, 8, 3, 9 };
 
 		System.out.println(answer[0] + "," + answer[1] + "," + answer[2] + "," + answer[3]);
-		int guess1[] = m.random();
+		// int guess1[] = m.random();
+		int guess1[] = { 5, 8, 3, 1 };
 		System.out.print(guess1[0] + "," + guess1[1] + "," + guess1[2] + "," + guess1[3] + ":  ");
 		int pin1[] = m.Comparison(answer, guess1);
-		int guess2[] = m.random();
+		// int guess2[] = m.random();
+		int guess2[] = { 3, 7, 1, 6 };
 		System.out.print(guess2[0] + "," + guess2[1] + "," + guess2[2] + "," + guess2[3] + ":  ");
 		int pin2[] = m.Comparison(answer, guess2);
-		int guess3[] = m.random();
+		// int guess3[] = m.random();
+		int guess3[] = { 5, 9, 6, 8 };
 		System.out.print(guess3[0] + "," + guess3[1] + "," + guess3[2] + "," + guess3[3] + ":  ");
 		int pin3[] = m.Comparison(answer, guess3);
-		int guess4[] = m.random();
+		// int guess4[] = m.random();
+		int guess4[] = { 4, 9, 8, 3 };
 		System.out.print(guess4[0] + "," + guess4[1] + "," + guess4[2] + "," + guess4[3] + ":  ");
 		int pin4[] = m.Comparison(answer, guess4);
-		int guess5[] = m.random();
-		System.out.print(guess5[0] + "," + guess5[1] + "," + guess5[2] + "," + guess5[3] + ":  ");
+		// int guess5[] = m.random();
+		int guess5[] = { 5, 7, 9, 4 };
+		System.out.println(guess5[0] + "," + guess5[1] + "," + guess5[2] + "," + guess5[3] + ":  ");
 		m.saveguess(guess1, guess2, guess3, guess4, pin1, pin2, pin3, pin4);
+		Node guess6=m.child(guess5);
+	
+	//	System.out.println(guess6[0] + "," + guess[1] + "," + guess5[2] + "," + guess5[3] + ":  ");
 
-		int child1[] = new int[4];
-		child1 = m.child1(guess5);
-		minerror = m.errorComparison(
-				m.error(save[0], save[1], save[2], save[3], guess5, save[4], save[5], save[6], save[7]),
-				(m.error(guess1, guess2, guess3, guess4, child1, pin1, pin2, pin3, pin4)), guess5, child1);
-		System.out.println("ghild:");
+		// int child1[] = new int[4];
+		// child1 = m.child1(guess5);
+		// minerror = m.errorComparison(
+		// m.error(save[0], save[1], save[2], save[3], guess5, save[4], save[5],
+		// save[6], save[7]),
+		// (m.error(guess1, guess2, guess3, guess4, child1, pin1, pin2, pin3, pin4)),
+		// guess5, child1);
+		// System.out.println("ghild:");
 
-		m.child(minerror[0]);
+		// m.child(minerror[0]);
 
-		if (minerror[1][0] == 0) {
-			System.out
-					.print(minerror[0][0] + "," + minerror[0][1] + "," + minerror[0][2] + "," + minerror[0][3] + ":  ");
-		}
+		// if (minerror[1][0] == 0) {
+		// System.out
+		// .print(minerror[0][0] + "," + minerror[0][1] + "," + minerror[0][2] + "," +
+		// minerror[0][3] + ": ");
+		// }
 
 	}
 
@@ -111,13 +123,14 @@ public class master {
 		int pin5[] = m.Comparison(newguess, guess1);
 		errorarray[0] = m.sumerror(pin1, pin5);
 		int pin6[] = m.Comparison(newguess, guess2);
-		errorarray[1] = m.sumerror(pin1, pin6);
+		errorarray[1] = m.sumerror(pin2, pin6);
 		int pin7[] = m.Comparison(newguess, guess3);
-		errorarray[2] = m.sumerror(pin1, pin7);
+		errorarray[2] = m.sumerror(pin3, pin7);
 		int pin8[] = m.Comparison(newguess, guess4);
-		errorarray[3] = m.sumerror(pin1, pin8);
+		errorarray[3] = m.sumerror(pin4, pin8);
 		error = errorarray[0] + errorarray[1] + errorarray[2] + errorarray[3];
-
+		System.out.println("error :" + error);
+		System.out.println("------------------------------");
 		return error;
 	}
 
@@ -177,20 +190,6 @@ public class master {
 	}
 
 	// search Node
-	public boolean Searchnumber(int number) {
-		Node cur = first;
-
-		while (cur.number != number && cur != null) {
-			cur = cur.link;
-
-		}
-		if (cur.number == number) {
-			return true;
-		}
-		return false;
-	}
-
-	// search2 Node
 	public boolean Search(int c, Node node) {
 		Node cur = node;
 		if (cur.c1 == c || cur.c2 == c || cur.c3 == c || cur.c4 == c) {
@@ -202,65 +201,99 @@ public class master {
 
 	public Node min_error_node() {
 		Node min_error = first;
-		
+		int minerror = first.error;
+		Node cur = first;
+		while (cur.link != null) {
+			if (cur.link.error < minerror) {
+				minerror = cur.link.error;
+				min_error = cur.link;
+			}
+			cur = cur.link;
+		}
 
-		return first;
+		return min_error;
 
 	}
 
-	public void child(int parent[]) {
+	public Node child(int parent[]) {
 		master m = new master();
 		Random rand = new Random();
+		Node minerror = first;
 		int error = m.error(save[0], save[1], save[2], save[3], parent, save[4], save[5], save[6], save[7]);
+
 		Node p = m.insertb(parent, error);
-		int j = rand.nextInt(3);
+
+		minerror = m.min_error_node();
+		int j = 2;// rand.nextInt(4);
+
 		for (int i = 1; i < 10; i++) {
-			if (m.Search(i, p) == false) {
+			if (m.Search(i, p) == true) {
 				parent[j] = i;
+				System.out.println(parent[0] + "," + parent[1] + "," + parent[2] + "," + parent[3] + ":  ");
 				error = m.error(save[0], save[1], save[2], save[3], parent, save[4], save[5], save[6], save[7]);
 				m.insertb(parent, error);
+				minerror = m.min_error_node();
 
 			}
 		}
-		int j1 = 0;
+		parent[0] = p.c1;
+		parent[1] = p.c2;
+		parent[2] = p.c3;
+		parent[3] = p.c4;
+		int j1 = rand.nextInt(4);
 		while (j == j1) {
-			j1 = rand.nextInt(3);
+			j1 = rand.nextInt(4);
 		}
 		for (int i = 1; i < 10; i++) {
-			if (m.Search(i, p) == false) {
+			if (m.Search(i, p) == true) {
 				parent[j1] = i;
+				System.out.println(parent[0] + "," + parent[1] + "," + parent[2] + "," + parent[3] + ":  ");
 				error = m.error(save[0], save[1], save[2], save[3], parent, save[4], save[5], save[6], save[7]);
 				m.insertb(parent, error);
+				minerror = m.min_error_node();
 
 			}
 		}
+		parent[0] = p.c1;
+		parent[1] = p.c2;
+		parent[2] = p.c3;
+		parent[3] = p.c4;
 		int j2 = 0;
 		while (j == j2 || j2 == j1) {
-			j2 = rand.nextInt(3);
+			j2 = rand.nextInt(4);
 		}
 
 		for (int i = 1; i < 10; i++) {
-			if (m.Search(i, p) == false) {
+			if (m.Search(i, p) == true) {
 				parent[j2] = i;
+				System.out.println(parent[0] + "," + parent[1] + "," + parent[2] + "," + parent[3] + ":  ");
 				error = m.error(save[0], save[1], save[2], save[3], parent, save[4], save[5], save[6], save[7]);
 				m.insertb(parent, error);
+				minerror = m.min_error_node();
 
 			}
 		}
-		int j3= 0;
-		while (j == j3 || j3 == j1 || j3==j2) {
-			j3 = rand.nextInt(3);
+		parent[0] = p.c1;
+		parent[1] = p.c2;
+		parent[2] = p.c3;
+		parent[3] = p.c4;
+		int j3 = 0;
+		while (j == j3 || j3 == j1 || j3 == j2) {
+			j3 = rand.nextInt(4);
 		}
 
 		for (int i = 1; i < 10; i++) {
-			if (m.Search(i, p) == false) {
+			if (m.Search(i, p) == true) {
 				parent[j3] = i;
+				System.out.println(parent[0] + "," + parent[1] + "," + parent[2] + "," + parent[3] + ":  ");
 				error = m.error(save[0], save[1], save[2], save[3], parent, save[4], save[5], save[6], save[7]);
 				m.insertb(parent, error);
+				minerror = m.min_error_node();
 
 			}
 		}
-		m.min_error_node();
+		System.out.println("minerror:" + minerror.error);
+		return minerror;
 
 	}
 
